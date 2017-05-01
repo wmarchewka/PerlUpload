@@ -21,7 +21,6 @@ sub upload_unit
    my($slot) = $_[3];
    my($file) = $_[4];
 
-
    my $data;
    my $socket;
    my $authorization = encode_base64($user.":".$password,"");
@@ -46,6 +45,9 @@ sub upload_unit
    "Content-Type: application/octet-stream\r\n".
    "\r\n";
 
+   print length($req_body);
+    print("\r\n");
+
    open FILE, $file;
    binmode FILE;
    while (<FILE>) {
@@ -53,7 +55,15 @@ sub upload_unit
    }
    close FILE;
 
+
+    print length($req_body);
+    print("\r\n");
+
    $req_body = $req_body . "\r\n-----------------------------7dd3201c5104d4\r\n";
+    print length("\r\n-----------------------------7dd3201c5104d4\r\n");
+    print("\r\n");
+
+
 
    # Now create the request header. This has to be done after the body since the 
    # header contains the length of the body
@@ -69,14 +79,16 @@ sub upload_unit
    "Authorization: Basic ".$authorization."\r\n\r\n".
    "\r\n";
 
+
    # Send the request
+   print $req_head . $req_body;
    $socket->send($req_head . $req_body);
 
    # Get the response
    my $response = "";
    while ($data = <$socket>) {
       $response .= $data; 
-      #print $data;
+      print $data;
    }   
 
    # Done with the socket, so close it
